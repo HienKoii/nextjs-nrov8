@@ -5,6 +5,7 @@ import Sidebar from "@/components/Sidebar";
 import "@/styles/globals.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Providers from "./providers";
+import ToastProvider from "@/components/ToastProvider";
 
 export const metadata = {
   title: "Ngọc Rồng Online",
@@ -16,6 +17,7 @@ export default function RootLayout({ children }) {
     <html lang="vi">
       <body>
         <Providers>
+          <ToastProvider />
           <div className="nro-page">
             <div className="d-flex flex-column min-vh-100">
               <Header />

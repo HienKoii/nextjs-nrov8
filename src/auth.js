@@ -17,61 +17,65 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           type: "password",
         },
       },
-
       async authorize(credentials) {
         if (!credentials?.username || !credentials?.password) {
           return null;
         }
 
-        const account = await prisma.account.findUnique({
-          where: {
-            username: String(credentials.username),
-          },
-
-          select: {
-            id: true,
-            username: true,
-            password: true,
-            is_admin: true,
-            active: true,
-            vnd: true,
-            danap: true,
-            player: {
-              select: {
-                id: true,
-                name: true,
-                head: true,
-                gender: true,
+        try {
+          const account = await prisma.account.findUnique({
+            where: {
+              username: String(credentials.username),
+            },
+            select: {
+              id: true,
+              username: true,
+              password: true,
+              is_admin: true,
+              active: true,
+              vnd: true,
+              danap: true,
+              player: {
+                select: {
+                  id: true,
+                  name: true,
+                  head: true,
+                  gender: true,
+                },
               },
             },
-          },
-        });
+          });
 
-        if (!account) {
-          return null;
+          if (!account) {
+            return null;
+          }
+
+          // Kiểm tra password
+          if (String(credentials.password) !== account.password) {
+            return null;
+          }
+
+          return {
+            id: String(account.id),
+            username: account.username,
+            is_admin: account.is_admin,
+            vnd: account.vnd,
+            danap: account.danap,
+            active: account.active,
+            player: account.player
+              ? {
+                  id: account.player.id,
+                  name: account.player.name,
+                  head: account.player.head,
+                  gender: account.player.gender,
+                }
+              : null,
+          };
+        } catch (error) {
+          console.error("[AUTH] Database error:", error);
+
+          throw new Error("Lỗi server, vui lòng thử lại.");
         }
-
-        // Kiểm tra password
-        if (String(credentials.password) !== account.password) {
-          return null;
-        }
-
-        return {
-          id: String(account.id),
-          username: account.username,
-          is_admin: account.is_admin,
-          vnd: account.vnd,
-          danap: account.danap,
-          active: account.active,
-          player: account.player
-            ? {
-                id: account.player.id,
-                name: account.player.name,
-                head: account.player.head,
-                gender: account.player.gender,
-              }
-            : null,
-        };
       },
     }),
   ],

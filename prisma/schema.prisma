@@ -8,42 +8,52 @@ datasource db {
 }
 
 model account {
-  id                    Int                     @id @default(autoincrement())
-  username              String                  @unique(map: "username") @db.VarChar(20)
-  password              String                  @db.VarChar(100)
-  is_admin              Boolean                 @default(false)
-  last_time_login       DateTime                @default(dbgenerated("('2002-07-31 00:00:00')")) @db.Timestamp(0)
-  last_time_logout      DateTime                @default(dbgenerated("('2002-07-31 00:00:00')")) @db.Timestamp(0)
-  active                Boolean                 @default(false)
-  vnd                   Int                     @default(0)
-  danap                 Int
-  ban                   Boolean                 @default(false)
-  thoi_vang             Int                     @default(0)
-  ip_address            String?                 @db.VarChar(50)
-  is_gift_box           Boolean?                @default(false)
-  gift_time             String?                 @default("0") @db.VarChar(255)
-  reward                String?                 @db.LongText
-  token                 String                  @db.Text
-  xsrf_token            String                  @db.Text
-  newpass               String                  @db.Text
-  luotquay              Int                     @default(0)
-  vang                  BigInt                  @default(0)
-  event_point           Int                     @default(0)
-  vip                   Int                     @default(0)
-  server_login          Int                     @default(-1)
-  bd_player             Float?                  @default(1)
-  create_time           DateTime?               @default(now()) @db.Timestamp(0)
-  update_time           DateTime?               @default(now()) @db.Timestamp(0)
-  tichdiem              Int                     @default(0)
-  point_post            Int                     @default(0)
-  last_post             Int                     @default(0)
-  gioithieu             Int?
-  xacnhan_gioitheu      Int                     @default(0)
-  baiviet               Int                     @default(0)
-  xacminh               Int                     @default(0)
-  admin                 Int                     @default(0)
-  gmail                 String                  @db.LongText
-  email                 String                  @db.LongText
+  id       Int    @id @default(autoincrement())
+  username String @unique(map: "username") @db.VarChar(20)
+  password String @db.VarChar(100)
+
+  is_admin Boolean @default(false)
+
+  last_time_login  DateTime @default(dbgenerated("('2002-07-31 00:00:00')")) @db.Timestamp(0)
+  last_time_logout DateTime @default(dbgenerated("('2002-07-31 00:00:00')")) @db.Timestamp(0)
+
+  active    Boolean @default(false)
+  vnd       Int     @default(0)
+  danap     Int     @default(0)
+  ban       Boolean @default(false)
+  thoi_vang Int     @default(0)
+
+  ip_address  String?  @db.VarChar(50)
+  is_gift_box Boolean? @default(false)
+  gift_time   String?  @default("0") @db.VarChar(255)
+  reward      String?  @db.LongText
+
+  token      String @default("")
+  xsrf_token String @default("")
+  newpass    String @default("")
+
+  luotquay     Int    @default(0)
+  vang         BigInt @default(0)
+  event_point  Int    @default(0)
+  vip          Int    @default(0)
+  server_login Int    @default(-1)
+  bd_player    Float? @default(1)
+
+  create_time DateTime? @default(now()) @db.Timestamp(0)
+  update_time DateTime? @default(now()) @db.Timestamp(0)
+
+  tichdiem         Int  @default(0)
+  point_post       Int  @default(0)
+  last_post        Int  @default(0)
+  gioithieu        Int?
+  xacnhan_gioitheu Int  @default(0)
+  baiviet          Int  @default(0)
+  xacminh          Int  @default(0)
+  admin            Int  @default(0)
+
+  gmail String @default("") @db.LongText
+  email String @db.LongText
+
   gold_exchange_history gold_exchange_history[]
   player                player?
 }

@@ -4,18 +4,17 @@ import { useState } from "react";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 export default function LoginPage() {
   const router = useRouter();
 
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    setError("");
     setLoading(true);
 
     const formData = new FormData(e.currentTarget);
@@ -30,17 +29,28 @@ export default function LoginPage() {
         redirect: false,
       });
 
+      console.log("[LOGIN RESULT]", result);
+
       if (result?.error) {
-        setError("Tên đăng nhập hoặc mật khẩu không đúng.");
+        console.error("[LOGIN ERROR]", result.error);
+
+        if (result.error === "CredentialsSignin") {
+          toast.error("Tên đăng nhập hoặc mật khẩu không đúng.");
+        } else {
+          toast.error("Lỗi server, vui lòng thử lại.");
+        }
+
         return;
       }
 
-      // Đăng nhập thành công
+      toast.success("Đăng nhập thành công!");
+
       router.push("/");
       router.refresh();
     } catch (error) {
-      console.error(error);
-      setError("Có lỗi xảy ra, vui lòng thử lại.");
+      console.error("[LOGIN ERROR]", error);
+
+      toast.error("Lỗi server, vui lòng thử lại.");
     } finally {
       setLoading(false);
     }
@@ -78,9 +88,6 @@ export default function LoginPage() {
                 <i className={showPassword ? "bi bi-eye-slash" : "bi bi-eye"}></i>
               </button>
             </div>
-
-            {/* Thông báo lỗi */}
-            {error && <div className="alert alert-danger py-2 mb-0">{error}</div>}
 
             {/* Đăng nhập */}
             <button type="submit" className="btn btn-danger w-100 fw-bold py-3 mt-1" disabled={loading}>
